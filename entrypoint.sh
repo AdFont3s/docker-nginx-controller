@@ -11,7 +11,6 @@ agent_conf_file="/etc/controller-agent/agent.conf"
 agent_log_file="/var/log/nginx-controller/agent.log"
 nginx_status_conf="/etc/nginx/conf.d/stub_status.conf"
 api_key=""
-controller_imagename=""
 controller_url=""
 
 # Launch nginx
@@ -23,13 +22,11 @@ nginx_pid=$!
 test -n "${ENV_API_KEY}" && \
     api_key=${ENV_API_KEY}
 
-test -n "${CONTROLLER_IMAGENAME}" && \
-    controller_imagename=${CONTROLLER_IMAGENAME}
 
 test -n "${ENV_CONTROLLER_URL}" && \
     controller_url=${ENV_CONTROLLER_URL}
 
-if [ -n "${api_key}" -o -n "${controller_imagename}" -o -n "${controller_url}" ]; then
+if [ -n "${api_key}"  -o -n "${controller_url}" ]; then
     echo "updating ${agent_conf_file} ..."
 
     if [ ! -f "${agent_conf_file}" ]; then
@@ -41,11 +38,6 @@ if [ -n "${api_key}" -o -n "${controller_imagename}" -o -n "${controller_url}" ]
     test -n "${api_key}" && \
     echo " ---> using api_key = ${api_key}" && \
     sh -c "sed -i.old -e 's/api_key.*$/api_key = $api_key/' \
-	${agent_conf_file}"
-
-    test -n "${controller_imagename}" && \
-    echo " ---> using imagename = ${controller_imagename}" && \
-    sh -c "sed -i.old -e 's/imagename.*$/imagename = $controller_imagename/' \
 	${agent_conf_file}"
     
     test -n "${controller_url}" && \
